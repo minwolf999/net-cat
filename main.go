@@ -36,6 +36,20 @@ func main() {
 		fmt.Println("Too many arguments")
 		return
 	}
+	
+	var ip string
+
+	addrs, _ := net.InterfaceAddrs()
+	for _, a := range addrs {
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				ip = ipnet.IP.String()
+				break
+			}
+		}
+	}
+
+	fmt.Printf("Started at ip: %s%s\n", ip, function.Port)
 
 	ln, err := net.Listen("tcp", function.Port)
 	if err != nil {
